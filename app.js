@@ -26,6 +26,8 @@ function playerOneRoll() {
 }
 
 function playerTwoRoll() {
+  if (playerTwoTurn) return; // Prevent player from rolling if already have a valid roll for the round
+
   const fourthRandomNum = Math.floor(Math.random() * 6) + 1;
   const fourthDiceImage = "./assets/dice" + fourthRandomNum + ".png";
   document.querySelector("#four").setAttribute("src", fourthDiceImage);
@@ -91,21 +93,21 @@ function checkNumbersPlayerOne() {
     playerOneRolled.includes(2) &&
     playerOneRolled.includes(3)
   ) {
-    // Document.querySelector("h1").innerHTML = "Player 1 Aced Out";
+    document.querySelector("h1").innerHTML = "Player 1 Aced Out";
     playerOneScore = 0;
   } else if (
     playerOneRolled.includes(4) &&
     playerOneRolled.includes(5) &&
     playerOneRolled.includes(6)
   ) {
-    // Document.querySelector("h1").innerHTML = "Cee Low Dice Player 1";
+    document.querySelector("h1").innerHTML = "Cee Low Dice Player 1";
     playerOneScore = 13;
   } else if (
     playerOneRolled[0] === playerOneRolled[1] &&
     playerOneRolled[1] === playerOneRolled[2]
   ) {
-    // return (playerOneRolled[] = playerOnesPiont);
-    // Document.querySelector("h1").innerHTML = "Player 1 Rolled Tripple " + [0];
+    document.querySelector("h1").innerHTML =
+      "Player 1 Rolled Tripple " + playerOneRolled[0];
     playerOneScore = playerOneRolled[0] + 6;
   } else if (
     playerOneRolled[0] === playerOneRolled[1] ||
@@ -114,11 +116,16 @@ function checkNumbersPlayerOne() {
   ) {
     let result = getThird(playerOneRolled);
     playerOneScore = result;
+    document.querySelector("h1").innerHTML = "Player 1 Rolled " + result;
+  } else {
+    document.querySelector("h1").innerHTML = "Not a valid roll - keep trying!";
   }
 
   if (playerOneScore !== null) {
     playerOneTurn = true;
   }
+
+  checkWinner();
 }
 
 function checkNumbersPlayerTwo() {
@@ -127,21 +134,21 @@ function checkNumbersPlayerTwo() {
     playerTwoRolled.includes(2) &&
     playerTwoRolled.includes(3)
   ) {
-    // Document.querySelector("h1").innerHTML = "Player 1 Aced Out";
+    document.querySelector("h1").innerHTML = "Player 2 Aced Out";
     playerTwoScore = 0;
   } else if (
     playerTwoRolled.includes(4) &&
     playerTwoRolled.includes(5) &&
     playerTwoRolled.includes(6)
   ) {
-    // Document.querySelector("h1").innerHTML = "Cee Low Dice Player 1";
+    document.querySelector("h1").innerHTML = "Cee Low Dice Player 2";
     playerTwoScore = 13;
   } else if (
     playerTwoRolled[0] === playerTwoRolled[1] &&
     playerTwoRolled[1] === playerTwoRolled[2]
   ) {
-    // return (playerOneRolled[] = playerOnesPiont);
-    // Document.querySelector("h1").innerHTML = "Player 1 Rolled Tripple " + [0];
+    document.querySelector("h1").innerHTML =
+      "Player 2 Rolled Tripple " + playerTwoRolled[0];
     playerTwoScore = playerTwoRolled[0] + 6;
   } else if (
     playerTwoRolled[0] === playerTwoRolled[1] ||
@@ -150,14 +157,38 @@ function checkNumbersPlayerTwo() {
   ) {
     let result = getThird(playerTwoRolled);
     playerTwoScore = result;
+    document.querySelector("h1").innerHTML = "Player 2 Rolled " + result;
+  } else {
+    document.querySelector("h1").innerHTML = "Not a valid roll - keep trying!";
   }
 
   if (playerTwoScore !== null) {
     playerTwoTurn = true;
   }
+
+  checkWinner();
 }
-//if (playerOneScore > playerTwoScore) {
-//Document.querySelector("h1").innerHTML = "Player 1 Gets Paid";
-//} else if (playerOneScore < playerTwoScore) {
-//document.querySelector("h1").innerHTML = "Player 2 Gets Paid";
-//} else document.querySelector("h1").innerHTML = "No One Gets Paid";
+
+function checkWinner() {
+  if (playerOneTurn && playerTwoTurn) {
+    console.log(
+      "Player1 Score: ",
+      playerOneScore,
+      "Player2 Score: ",
+      playerTwoScore
+    );
+
+    if (playerOneScore > playerTwoScore) {
+      document.querySelector("h1").innerHTML = "Player 1 Gets Paid";
+    } else if (playerOneScore < playerTwoScore) {
+      document.querySelector("h1").innerHTML = "Player 2 Gets Paid";
+    } else {
+      document.querySelector("h1").innerHTML = "No One Gets Paid";
+    }
+
+    playerOneScore = null;
+    playerTwoScore = null;
+    playerOneTurn = false;
+    playerTwoTurn = false;
+  }
+}
